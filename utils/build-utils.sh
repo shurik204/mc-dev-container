@@ -1,0 +1,1 @@
+g++ -o ./container/bin/setpassword -O2 ./utils/setpassword.cpp

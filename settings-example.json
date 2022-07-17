@@ -1,0 +1,75 @@
+{
+    "host": {
+        "__comment1": "Where to store some container files",
+        "container-folder": "/development/container",
+        
+        "__comment2": "Where to mount server folders. This folder in turn will be mounted to the container",
+        "servers-folder": "/development/servers",
+
+        "__comment3": "Name (and hostname) of the container",
+        "container-name": "development",
+
+        "__comment4": "Name of the Wings daemon service",
+        "wings-service": "wings",
+
+        "__comment5": "Name of the Wings daemon user (who owns server files)",
+        "wings-user": "pterodactyl"
+    },
+    "container": {
+        "__comment1": "Path to servers in container",
+        "servers-folder": "/servers",
+
+        "__comment2": "Public keys for root user",
+        "root-public-keys": [
+            "root account public key",
+            "and another one"
+        ]
+    },
+    "groups": [
+        {"name": "dev1", "id": 1050},
+        {"name": "dev2", "id": 1051}
+    ],
+    "servers": [
+        {
+            "__comment1": "Server name. Basically unused for now.",
+            "name":"dev1",
+            
+            "__comment2:": "User group, which can access this server",
+            "group": "dev1",
+            
+            "__comment3": "This folder will be used in both host and container",
+            "folder": "dev1",
+
+            "__comment4": "Where to look for server files on host",
+            "host-folder": "/var/lib/pterodactyl/servers/eeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+        },
+        {
+            "name":"dev2",
+            "group": "dev2",
+            "folder": "dev2",
+            "host-folder": "/var/lib/pterodactyl/servers/ddddddd-dddd-dddd-dddd-dddddddddddd"
+        }
+    ],
+    "users": [
+        {
+            "__comment1": "Username",
+            "name": "developer1",
+
+            "__comment2": "List of groups user is assigned to. Determines what servers user has access to. Groups must already exist or be defined in 'groups' section.",
+            "groups": [
+                "sudo",
+                "dev1",
+                "dev2"
+            ],
+
+            "__comment3": "Auth methods for the user",
+            "auth": {
+                "__comment4": "Allowed methods are 'password' and 'publickey'",
+                "publickey": [
+                    "Set public keys for user here.",
+                    "Each user can have multiple keys."
+                ]
+            }
+        }
+    ]
+}
