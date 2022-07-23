@@ -2,6 +2,7 @@
 
 # CRON_FILE_PATH = '/etc/cron.d/chmod_server_folders'
 
+import contextlib
 import json
 import sys
 import os
@@ -52,9 +53,6 @@ try:
 
         assert ('publickey' in user['auth'].keys() and user['auth']['publickey'] != []) or ('password' in user['auth'].keys() and type(user['auth']['password']) is str)
         
-        if 'sudo' in user['groups'] and not ('password' in user['auth'].keys()):
-            print('[!] Admin user (with "sudo" group) doesn\'t have a password set.')
-        
 except (AssertionError, TypeError) as e:
     print(f"[!] Settings validation failed. {e.__class__.__name__}")
     exit(2)
@@ -88,7 +86,8 @@ host_container_folder_home = os.path.join(config['host']['container-folder'], 'h
 if not NO_EXEC:
     os.makedirs(config['host']['servers-folder'], exist_ok=True)
     os.makedirs(config['host']['container-folder'], exist_ok=True)
-    os.mkdir(host_container_folder_home)
+    with contextlib.suppress(FileExistsError):
+        os.mkdir(host_container_folder_home)
 
 print(f'[.] Setting up servers')
 for server in config['servers']:
@@ -113,13 +112,13 @@ def configure_wings():
         # read config
         with open('/etc/pterodactyl/config.yml', 'r') as f: wings_conf = f.read()
         # Check if option exists and is set to true
-        if re.search(f'^{OPTION_NAME} *: *true', wings_conf) != None:
+        if re.search(f'{OPTION_NAME} *: *false', wings_conf) != None:
             print(f'[!] Wings option "{OPTION_NAME}"  is already set')
             return
         # If not set to true, check if it exists and replace if it does
-        elif re.search(f'^{OPTION_NAME} *:.*', wings_conf) != None: re.sub(f'^{OPTION_NAME} *:.*', f'{OPTION_NAME}: true\n', wings_conf)
+        elif re.search(f'{OPTION_NAME} *:.*', wings_conf) != None: wings_conf = re.sub(f'{OPTION_NAME} *: *true', f'{OPTION_NAME}: false', wings_conf)
         # If not set to true nor found in file, just append it 
-        else: wings_conf += f'\n{OPTION_NAME}: true\n'
+        else: wings_conf += f'\n{OPTION_NAME}: false\n'
 
         # Write changes to file
         with open('/etc/pterodactyl/config.yml', 'w') as f: f.write(wings_conf)

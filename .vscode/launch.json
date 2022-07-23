@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: host-init.py",
+            "name": "Python: host-init.py --dry-run",
             "type": "python",
             "request": "launch",
             "program": "host-init.py",
@@ -16,7 +16,15 @@
             "justMyCode": true
         },
         {
-            "name": "Python: container-init.py",
+            "name": "Python: host-init.py",
+            "type": "python",
+            "request": "launch",
+            "program": "host-init.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: container-init.py --dry-run",
             "type": "python",
             "request": "launch",
             "program": "container-init.py",
